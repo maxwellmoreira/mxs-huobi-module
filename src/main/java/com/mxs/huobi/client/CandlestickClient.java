@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(value = "candlestick", url = "${huobi.url}")
 public interface CandlestickClient {
     @GetMapping("/market/history/kline")
-    CandlestickClientResponse getLastPattern(@RequestParam("symbol") String symbol,
+    CandlestickClientResponse listCandlestick(@RequestParam("symbol") String symbol,
                                              @RequestParam("period") String period,
                                              @RequestParam("size") int size);
 }

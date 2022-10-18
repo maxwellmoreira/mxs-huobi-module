@@ -17,7 +17,7 @@ public class CandlestickStrategy {
 
     public CandlestickResponse listCandlestick(CandlestickRequest candlestickRequest) {
         CandlestickClientResponse candlestickClientResponse =
-                candlestickClient.getLastPattern(
+                candlestickClient.listCandlestick(
                         candlestickRequest.getSymbol().getCode(),
                         candlestickRequest.getPeriod().getCode(),
                         candlestickRequest.getSize());
