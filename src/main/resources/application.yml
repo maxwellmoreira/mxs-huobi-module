@@ -1,0 +1,5 @@
+huobi:
+  url: https://api.huobi.pro
+  key:
+    access:
+    secret:
