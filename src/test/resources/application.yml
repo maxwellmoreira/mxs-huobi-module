@@ -1,0 +1,8 @@
+huobi:
+  url: http://localhost:${wiremock.server.port}
+  key:
+    access:
+    secret:
+wiremock:
+  server:
+    port: 8081
