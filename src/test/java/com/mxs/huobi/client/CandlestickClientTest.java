@@ -8,12 +8,10 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(classes = FeignFactory.class)
@@ -48,13 +46,13 @@ public class CandlestickClientTest {
                 "json/candlestick_stub_response.json", CandlestickClientResponse.class);
 
         wireMockServer.stubFor(get("/market/history/kline?symbol=btcusdt&period=60min&size=6")
-                .willReturn(ok().withHeader("Content-Type", "application/json")
-                        .withBody(candlestickStubResponse)
-                        .withStatus(HttpStatus.OK.value())));
+                .willReturn(ok().withHeader("Content-Type", "application/json").withBody(candlestickStubResponse)));
 
-        CandlestickClientResponse actual =
-                candlestickClient.listCandlestick("btcusdt", "60min", 6);
+        CandlestickClientResponse actual = candlestickClient.listCandlestick("btcusdt", "60min", 6);
 
+        Assertions.assertEquals(expected.getCh(), actual.getCh());
+        Assertions.assertEquals(expected.getStatus(), actual.getStatus());
+        Assertions.assertEquals(expected.getTs(), actual.getTs());
         Assertions.assertEquals(expected.getData().size(), actual.getData().size());
     }
 }
