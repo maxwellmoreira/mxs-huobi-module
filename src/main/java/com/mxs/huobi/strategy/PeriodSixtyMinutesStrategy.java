@@ -20,14 +20,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class PeriodSixtyMinutesStrategy implements PeriodContract {
-
     private static final int LESS_ONE_DAY = 1;
-
     private static final int LESS_ONE_HOUR = 1;
-
-    private static final int TWENTY_THREE_HOURS = 23;
-
     private static final int MIDNIGHT = 0;
+    private static final int TWENTY_THREE_HOURS = 23;
 
     @Autowired
     private CandlestickStrategy candlestickStrategy;
