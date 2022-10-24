@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class PeriodFacade {
     @Autowired
-    private PeriodFactory periodContract;
+    private PeriodFactory periodFactory;
 
     public PeriodResponse listCandlestickByPeriod(PeriodRequest periodRequest) {
-        return periodContract.setPeriod(periodRequest.getPeriod()).listCandlestickByPeriod(periodRequest);
+        return periodFactory.setPeriod(periodRequest.getPeriod()).listCandlestickByPeriod(periodRequest);
     }
 }
