@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +22,12 @@ import java.util.stream.Collectors;
 public class PeriodSixtyMinutesStrategy implements PeriodContract {
 
     private static final int LESS_ONE_DAY = 1;
+
+    private static final int LESS_ONE_HOUR = 1;
+
     private static final int TWENTY_THREE_HOURS = 23;
+
+    private static final int MIDNIGHT = 0;
 
     @Autowired
     private CandlestickStrategy candlestickStrategy;
@@ -50,7 +56,7 @@ public class PeriodSixtyMinutesStrategy implements PeriodContract {
                     PeriodSixtyMinutesStrategy.PeriodNestedClass periodStopedFalse =
                             periodNestedClassList.stream().filter(period -> !period.stoped).findFirst().orElse(null);
 
-                    if (periodStopedFalse.getHour() < 0) {
+                    if (periodStopedFalse.getHour() < MIDNIGHT) {
 
                         periodStopedFalse.setStoped(true);
 
@@ -84,7 +90,7 @@ public class PeriodSixtyMinutesStrategy implements PeriodContract {
         periodDto.setMonth(periodNestedClass.getLocalDateTime().getMonth().name());
         periodDto.setHour(periodNestedClass.getHour());
 
-        periodNestedClass.setHour(periodNestedClass.getHour() - 1);
+        periodNestedClass.setHour(periodNestedClass.getHour() - LESS_ONE_HOUR);
 
         return periodDto;
     }
@@ -95,7 +101,8 @@ public class PeriodSixtyMinutesStrategy implements PeriodContract {
         private boolean stoped;
 
         public PeriodNestedClass() {
-            this.localDateTime = LocalDateTime.now();
+            ZoneId zoneId = ZoneId.of("GMT+8");
+            this.localDateTime = LocalDateTime.now(zoneId);
             this.hour = localDateTime.getHour();
             this.stoped = false;
         }

@@ -4,18 +4,18 @@ import com.mxs.huobi.dto.ExceptionDto;
 import com.mxs.huobi.exception.BadRequestException;
 import com.mxs.huobi.type.ExceptionType;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.context.request.WebRequest;
 
 @ControllerAdvice
 public class ExceptionFactory {
     @ExceptionHandler(value = {BadRequestException.class})
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ExceptionDto resourceBadRequestException(BadRequestException badRequestException) {
+    public ResponseEntity<ExceptionDto> resourceBadRequestException(BadRequestException badRequestException, WebRequest webRequest) {
         ExceptionDto exceptionDto = new ExceptionDto();
         exceptionDto.setType(ExceptionType.BUSINESS);
-        exceptionDto.getMessage(badRequestException.getMessage());
-        return exceptionDto;
+        exceptionDto.setMessage(badRequestException.getMessage());
+        return new ResponseEntity<>(exceptionDto, HttpStatus.BAD_REQUEST);
     }
 }

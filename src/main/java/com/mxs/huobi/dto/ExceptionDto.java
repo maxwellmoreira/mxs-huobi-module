@@ -19,8 +19,12 @@ public class ExceptionDto {
         return type;
     }
 
-    public String getMessage(String message) {
-        return this.message;
+    public String getMessage() {
+        return message;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
     }
 
     public void setType(ExceptionType type) {
@@ -29,5 +33,9 @@ public class ExceptionDto {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
     }
 }
