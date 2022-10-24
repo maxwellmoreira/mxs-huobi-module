@@ -5,7 +5,6 @@ import com.mxs.huobi.dto.CandlestickDto;
 import com.mxs.huobi.response.CandlestickClientResponse;
 import com.mxs.huobi.response.CandlestickResponse;
 import org.springframework.stereotype.Component;
-
 import java.util.stream.Collectors;
 
 @Component
