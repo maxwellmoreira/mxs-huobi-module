@@ -9,6 +9,9 @@ import com.mxs.huobi.request.PeriodRequest;
 import com.mxs.huobi.response.CandlestickResponse;
 import com.mxs.huobi.response.PeriodResponse;
 import com.mxs.huobi.type.PeriodType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,7 +53,8 @@ public class PeriodSixtyMinutesStrategy implements PeriodContract {
                 candlestickDto -> {
 
                     PeriodSixtyMinutesStrategy.PeriodNestedClass periodStopedFalse =
-                            periodNestedClassList.stream().filter(period -> !period.stoped).findFirst().orElse(null);
+                            periodNestedClassList.stream().filter(
+                                    period -> !period.stoped).findFirst().orElse(null);
 
                     if (periodStopedFalse.getHour() < MIDNIGHT) {
 
@@ -91,6 +95,9 @@ public class PeriodSixtyMinutesStrategy implements PeriodContract {
         return periodDto;
     }
 
+    @Data
+    @Builder
+    @AllArgsConstructor
     private static class PeriodNestedClass {
         private LocalDateTime localDateTime;
         private int hour;
@@ -101,30 +108,6 @@ public class PeriodSixtyMinutesStrategy implements PeriodContract {
             this.localDateTime = LocalDateTime.now(zoneId);
             this.hour = localDateTime.getHour();
             this.stoped = false;
-        }
-
-        public LocalDateTime getLocalDateTime() {
-            return localDateTime;
-        }
-
-        public int getHour() {
-            return hour;
-        }
-
-        public boolean isStoped() {
-            return stoped;
-        }
-
-        public void setLocalDateTime(LocalDateTime localDateTime) {
-            this.localDateTime = localDateTime;
-        }
-
-        public void setHour(int hour) {
-            this.hour = hour;
-        }
-
-        public void setStoped(boolean stoped) {
-            this.stoped = stoped;
         }
     }
 }

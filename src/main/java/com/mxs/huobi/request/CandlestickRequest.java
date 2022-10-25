@@ -2,10 +2,18 @@ package com.mxs.huobi.request;
 
 import com.mxs.huobi.type.CurrencyPairType;
 import com.mxs.huobi.type.PeriodType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CandlestickRequest {
     @NotNull(message = "Symbol is null")
     private CurrencyPairType symbol;
@@ -13,28 +21,4 @@ public class CandlestickRequest {
     private PeriodType period;
     @Min(value = 1, message = "Size should not be less than 1")
     private int size;
-
-    public CurrencyPairType getSymbol() {
-        return symbol;
-    }
-
-    public PeriodType getPeriod() {
-        return period;
-    }
-
-    public int getSize() {
-        return size;
-    }
-
-    public void setSymbol(CurrencyPairType symbol) {
-        this.symbol = symbol;
-    }
-
-    public void setPeriod(PeriodType period) {
-        this.period = period;
-    }
-
-    public void setSize(int size) {
-        this.size = size;
-    }
 }
