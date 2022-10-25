@@ -8,7 +8,6 @@ import com.mxs.huobi.request.CandlestickRequest;
 import com.mxs.huobi.request.PeriodRequest;
 import com.mxs.huobi.response.CandlestickResponse;
 import com.mxs.huobi.response.PeriodResponse;
-import com.mxs.huobi.type.PeriodType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,6 +19,8 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.mxs.huobi.type.PeriodType.SIXTY_MINUTES;
 
 @Service
 public class PeriodSixtyMinutesStrategy implements PeriodContract {
@@ -40,41 +41,45 @@ public class PeriodSixtyMinutesStrategy implements PeriodContract {
         return buildPeriodResponse(candlestickResponse);
     }
 
-    public PeriodResponse buildPeriodResponse(CandlestickResponse candlestickResponse) {
+    private PeriodResponse buildPeriodResponse(CandlestickResponse candlestickResponse) {
 
         PeriodResponse periodResponse = new PeriodResponse();
-        periodResponse.setPeriodType(PeriodType.SIXTY_MINUTES);
+        periodResponse.setPeriodType(SIXTY_MINUTES);
 
-        List<PeriodNestedClass> periodNestedClassList = new ArrayList<>();
-        PeriodSixtyMinutesStrategy.PeriodNestedClass periodNestedClass = new PeriodNestedClass();
-        periodNestedClassList.add(periodNestedClass);
+        List<OperatingPeriod> operatingPeriodList = new ArrayList<>();
+        PeriodSixtyMinutesStrategy.OperatingPeriod operatingPeriod = new OperatingPeriod();
+        operatingPeriodList.add(operatingPeriod);
 
         periodResponse.setPeriodDtoList(candlestickResponse.getCandlestickDtoList().stream().map(
                 candlestickDto -> {
 
-                    PeriodSixtyMinutesStrategy.PeriodNestedClass periodStopedFalse =
-                            periodNestedClassList.stream().filter(
+                    PeriodSixtyMinutesStrategy.OperatingPeriod trueOperatingPeriod =
+                            operatingPeriodList.stream().filter(
                                     period -> !period.stoped).findFirst().orElse(null);
 
-                    if (periodStopedFalse.getHour() < MIDNIGHT) {
+                    if (trueOperatingPeriod == null) {
+                        throw new IllegalStateException("There was an error getting a valid operating period");
+                    }
 
-                        periodStopedFalse.setStoped(true);
+                    if (trueOperatingPeriod.getHour() < MIDNIGHT) {
 
-                        PeriodSixtyMinutesStrategy.PeriodNestedClass newPeriodNestedClass = new PeriodNestedClass();
-                        newPeriodNestedClass.setLocalDateTime(periodStopedFalse.getLocalDateTime().minusDays(LESS_ONE_DAY));
-                        newPeriodNestedClass.setHour(TWENTY_THREE_HOURS);
+                        trueOperatingPeriod.setStoped(Boolean.TRUE);
 
-                        periodNestedClassList.add(newPeriodNestedClass);
+                        PeriodSixtyMinutesStrategy.OperatingPeriod newOperatingPeriod = new OperatingPeriod();
+                        newOperatingPeriod.setLocalDateTime(trueOperatingPeriod.getLocalDateTime().minusDays(LESS_ONE_DAY));
+                        newOperatingPeriod.setHour(TWENTY_THREE_HOURS);
 
-                        return buildPeriodDto(candlestickDto, newPeriodNestedClass);
+                        operatingPeriodList.add(newOperatingPeriod);
+
+                        return buildPeriodDto(candlestickDto, newOperatingPeriod);
                     } else {
-                        return buildPeriodDto(candlestickDto, periodStopedFalse);
+                        return buildPeriodDto(candlestickDto, trueOperatingPeriod);
                     }
                 }).collect(Collectors.toList()));
         return periodResponse;
     }
 
-    public PeriodDto buildPeriodDto(CandlestickDto candlestickDto, PeriodNestedClass periodNestedClass) {
+    private PeriodDto buildPeriodDto(CandlestickDto candlestickDto, OperatingPeriod periodNestedClass) {
         PeriodDto periodDto = new PeriodDto();
 
         periodDto.setOpen(candlestickDto.getOpen());
@@ -98,16 +103,16 @@ public class PeriodSixtyMinutesStrategy implements PeriodContract {
     @Data
     @Builder
     @AllArgsConstructor
-    private static class PeriodNestedClass {
+    private static class OperatingPeriod {
         private LocalDateTime localDateTime;
         private int hour;
         private boolean stoped;
 
-        public PeriodNestedClass() {
+        public OperatingPeriod() {
             ZoneId zoneId = ZoneId.of("GMT+8");
             this.localDateTime = LocalDateTime.now(zoneId);
             this.hour = localDateTime.getHour();
-            this.stoped = false;
+            this.stoped = Boolean.FALSE;
         }
     }
 }
