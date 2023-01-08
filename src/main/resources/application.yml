@@ -1,5 +1,30 @@
+server:
+  port: 8089
 huobi:
   url: https://api.huobi.pro
   key:
     access:
     secret:
+oracle:
+  oci:
+    administration:
+      tenancy:
+    profile:
+      username:
+    streaming:
+      bootstrap-servers:
+      sasl-jaas-config:
+      max-request-size:
+      retries:
+      group-id:
+      enable-auto-commit:
+      session-timeout-ms:
+      auto-offset-reset:
+      security:
+        protocol:
+      sasl:
+        mechanism:
+      pool:
+        mxs-huobi-module:
+      topic:
+        purchase-analysis:

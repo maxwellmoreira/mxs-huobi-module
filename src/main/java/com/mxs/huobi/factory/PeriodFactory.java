@@ -16,7 +16,7 @@ public class PeriodFactory {
         if (PeriodType.SIXTY_MINUTES.getCode().equalsIgnoreCase(periodType.getCode())) {
             return periodSixtyMinutesStrategy;
         } else {
-            throw new BadRequestException("Invalid operating period or not mapped");
+            throw new BadRequestException("Operating period not mapped");
         }
     }
 }

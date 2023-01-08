@@ -18,4 +18,12 @@ public class ExceptionFactory {
         exceptionDto.setMessage(badRequestException.getMessage());
         return new ResponseEntity<>(exceptionDto, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(value = {IllegalStateException.class})
+    public ResponseEntity<ExceptionDto> resourceIllegalStateException(IllegalStateException illegalStateException, WebRequest webRequest) {
+        ExceptionDto exceptionDto = new ExceptionDto();
+        exceptionDto.setType(ExceptionType.BUSINESS);
+        exceptionDto.setMessage(illegalStateException.getMessage());
+        return new ResponseEntity<>(exceptionDto, HttpStatus.BAD_REQUEST);
+    }
 }
